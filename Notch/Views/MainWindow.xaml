@@ -1,14 +1,13 @@
-﻿<Window x:Class="NotchWindows.MainWindow"
+﻿<Window x:Class="Notch.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Notch" Height="40" Width="309"
+        Title="Notch" Height="40" Width="400"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         Topmost="True" ShowInTaskbar="False" WindowStartupLocation="Manual">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0*"/>
-            <RowDefinition/>
+            <RowDefinition />
         </Grid.RowDefinitions>
         <Border x:Name="NotchBorder" 
                 Background="Black" 
@@ -16,13 +15,6 @@
                 VerticalAlignment="Center"
                 Height="40"
                 MouseEnter="NotchBorder_MouseEnter" 
-                MouseLeave="NotchBorder_MouseLeave" Grid.Row="1">
-
-            <StackPanel x:Name="ContentArea" Opacity="0" VerticalAlignment="Center" Margin="10">
-                <TextBlock Text="Musica in riproduzione..." Foreground="White" HorizontalAlignment="Center"/>
-                <Button Content="Pausa" Margin="0,10,0,0"/>
-            </StackPanel>
-
-        </Border>
+                MouseLeave="NotchBorder_MouseLeave" HorizontalAlignment="Center" Width="399"/>
     </Grid>
 </Window>

@@ -1,30 +1,23 @@
 using Notch.Core;
-using System.Windows.Markup;
 
 namespace Notch.Modules;
 
 public partial class BatteryModule : NotchModuleBase
 {
-    private bool _contentLoaded;
-
-    // Provide a simple stub for InitializeComponent in case the XAML-generated method is not available.
-    public void InitializeComponent()
+    public BatteryModule()
     {
-        // No-op: when XAML is present this is generated; keep a stub for compilation without XAML.
+        InitializeComponent();
     }
+
+    public override string ModuleName => "Battery";
 
     public override void OnModuleActivated()
     {
-        throw new NotImplementedException();
+        // Logica per aggiornare lo stato della batteria quando il modulo viene attivato
     }
 
     public override void OnModuleDeactivated()
     {
-        throw new NotImplementedException();
+        // Eventuali operazioni da eseguire quando il modulo viene disattivato
     }
-
-    public BatteryModule()
-    {}
-
-    public override string ModuleName => "Battery";
 }
