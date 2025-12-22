@@ -1,0 +1,11 @@
+<local:NotchModuleBase x:Class="Notch.Modules.BatteryModule"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:local="clr-namespace:Notch.Core">
+    <Grid>
+        <StackPanel Orientation="Horizontal" Margin="10">
+            <TextBlock Text="Batteria: 85%" Style="{StaticResource ModuleTextStyle}"/>
+            <ProgressBar Value="85" Width="50" Height="10" Margin="10,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</local:NotchModuleBase>

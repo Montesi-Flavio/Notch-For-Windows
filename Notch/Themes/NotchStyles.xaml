@@ -1,0 +1,26 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Color x:Key="NotchBackgroundColor">#FF121212</Color>
+    <SolidColorBrush x:Key="NotchBackgroundBrush" Color="{StaticResource NotchBackgroundColor}"/>
+    <SolidColorBrush x:Key="NotchAccentBrush" Color="#FF3D3D3D"/>
+
+    <Style x:Key="NotchBorderStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource NotchBackgroundBrush}"/>
+        <Setter Property="CornerRadius" Value="0,0,18,18"/>
+        <Setter Property="BorderBrush" Value="{StaticResource NotchAccentBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Effect">
+            <Setter.Value>
+                <DropShadowEffect BlurRadius="15" ShadowDepth="2" Opacity="0.3"/>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ModuleTextStyle" TargetType="TextBlock">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+        <Setter Property="FontSize" Value="12"/>
+    </Style>
+
+</ResourceDictionary>

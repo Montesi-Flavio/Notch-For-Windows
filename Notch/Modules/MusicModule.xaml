@@ -1,0 +1,23 @@
+<local:NotchModuleBase x:Class="Notch.Modules.MusicModule"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:local="clr-namespace:Notch.Core">
+    <StackPanel Orientation="Horizontal"
+                VerticalAlignment="Center"
+                Margin="15">
+        <Ellipse Width="40"
+                 Height="40"
+                 Fill="{StaticResource NotchAccentBrush}"/>
+
+        <StackPanel Margin="10,0,0,0">
+            <TextBlock x:Name="TxtTitle"
+                       Text="Titolo Canzone"
+                       Style="{StaticResource ModuleTextStyle}"
+                       FontWeight="Bold"/>
+            <TextBlock x:Name="TxtArtist"
+                       Text="Artista"
+                       Style="{StaticResource ModuleTextStyle}"
+                       Opacity="0.7"/>
+        </StackPanel>
+    </StackPanel>
+</local:NotchModuleBase>
