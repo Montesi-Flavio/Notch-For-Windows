@@ -1,20 +1,53 @@
-﻿<Window x:Class="Notch.Views.MainWindow"
+﻿<services:NotchWindow x:Class="Notch.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Notch" Height="40" Width="400"
-        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
-        Topmost="True" ShowInTaskbar="False" WindowStartupLocation="Manual">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:services="clr-namespace:Notch.Services"
+        mc:Ignorable="d"
+        Title="Notch" 
+        Height="150" Width="500"
+        WindowStyle="None" 
+        AllowsTransparency="True" 
+        Background="Transparent"
+        Topmost="True" 
+        ShowInTaskbar="False" 
+        WindowStartupLocation="Manual">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Border x:Name="NotchBorder" 
-                Background="Black" 
-                CornerRadius="0,0,15,15" 
-                VerticalAlignment="Center"
-                Height="40"
-                MouseEnter="NotchBorder_MouseEnter" 
-                MouseLeave="NotchBorder_MouseLeave" HorizontalAlignment="Center" Width="399"/>
+    <Grid VerticalAlignment="Top" HorizontalAlignment="Center">
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+            <Path x:Name="EarLeft"
+                  Fill="Black"
+                  Width="15" Height="15"
+                  VerticalAlignment="Top" 
+                  Margin="0,0,-0.5,0"
+                  Data="M0,0 L15,0 15,15 C15,6 9,0 0,0 z"/>
+
+            <Border x:Name="NotchBorder" 
+                    Background="Black" 
+                    CornerRadius="0,0,15,15"
+                    Width="370" Height="40"
+                    VerticalAlignment="Top">
+
+                <Grid>
+                    <ItemsControl x:Name="ContentArea" 
+                                  ItemsSource="{Binding ActiveModules}" 
+                                  Opacity="0"
+                                  HorizontalAlignment="Center" 
+                                  VerticalAlignment="Center"
+                                  Margin="10,0"/>
+                </Grid>
+            </Border>
+
+            <Path x:Name="EarRight"
+                  Fill="Black"
+                  Width="15" Height="15"
+                  VerticalAlignment="Top"
+                  Margin="-0.5,0,0,0"
+                  Data="M15,0 L0,0 0,15 C0,6 6,0 15,0 z"/>
+
+        </StackPanel>
     </Grid>
-</Window>
+</services:NotchWindow>
