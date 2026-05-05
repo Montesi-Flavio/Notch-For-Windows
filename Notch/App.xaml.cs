@@ -1,6 +1,5 @@
-﻿using System.Configuration;
-using System.Data;
-using System.Windows;
+﻿using System.Windows;
+using Notch.Configuration;
 
 namespace Notch;
 
@@ -13,15 +12,8 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        // Crei la finestra manualmente
-        var mainView = new Views.MainWindow();
-
-        // Crei il ViewModel (il "cervello")
-        var viewModel = new ViewModels.NotchViewModel();
-
-        // Colleghi i due
-        mainView.DataContext = viewModel;
-
+        var settings = NotchAppConfigLoader.Load();
+        var mainView = new Views.MainWindow(settings);
         mainView.Show();
     }
 }

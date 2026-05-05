@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Notch.Core;
+using Notch.Configuration;
 using System.Reflection;
 using System.Windows;
 
@@ -10,9 +11,16 @@ public class NotchViewModel
 {
     // Lista di moduli caricati dinamicamente
     public ObservableCollection<NotchModuleBase> ActiveModules { get; set; }
+    private readonly FeatureSettings _features;
 
     public NotchViewModel()
+        : this(new FeatureSettings())
     {
+    }
+
+    public NotchViewModel(FeatureSettings? features)
+    {
+        _features = features ?? new FeatureSettings();
         ActiveModules = new ObservableCollection<NotchModuleBase>();
         LoadModules();
     }
@@ -44,6 +52,7 @@ public class NotchViewModel
                 }
             })
             .Where(t => t is not null && moduleBaseType.IsAssignableFrom(t) && !t.IsAbstract)
+            .Where(IsModuleEnabled)
             .Distinct()
             .ToList();
 
@@ -78,5 +87,17 @@ public class NotchViewModel
                 Debug.WriteLine($"Errore creando il modulo {type.FullName}: {ex.Message}");
             }
         }
+    }
+
+    private bool IsModuleEnabled(Type type)
+    {
+        return type.Name switch
+        {
+            "MusicModule" => _features.EnableMusicModule,
+            "BatteryModule" => _features.EnableBatteryModule,
+            "CameraModule" => _features.EnableCameraMirror,
+            "NotesModule" => _features.EnableNotesIntegration,
+            _ => true
+        };
     }
 }
