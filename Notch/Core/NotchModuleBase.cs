@@ -1,11 +1,21 @@
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Notch.Core;
 
+public enum ModuleZone { Left, Right }
+
 public abstract class NotchModuleBase : UserControl
 {
-    // Proprietà comuni a tutti i moduli
     public abstract string ModuleName { get; }
-    public abstract void OnModuleActivated(); // Chiamato quando il notch si apre
-    public abstract void OnModuleDeactivated(); // Chiamato quando si chiude
+
+    // Sovrascrivibile per posizionare il modulo nella zona destra (es. batteria)
+    public virtual ModuleZone Zone => ModuleZone.Left;
+
+    public abstract void OnModuleActivated();
+    public abstract void OnModuleDeactivated();
+
+    // Chiamare da ogni modulo per mostrare/nascondere sé stesso
+    protected void SetActive(bool active)
+        => Visibility = active ? Visibility.Visible : Visibility.Collapsed;
 }

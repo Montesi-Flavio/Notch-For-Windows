@@ -1,103 +1,79 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Notch.Core;
-using Notch.Configuration;
 using System.Reflection;
 using System.Windows;
+using Notch.Configuration;
+using Notch.Core;
 
 namespace Notch.ViewModels;
 
 public class NotchViewModel
 {
-    // Lista di moduli caricati dinamicamente
-    public ObservableCollection<NotchModuleBase> ActiveModules { get; set; }
+    public ObservableCollection<NotchModuleBase> LeftModules  { get; } = new();
+    public ObservableCollection<NotchModuleBase> RightModules { get; } = new();
+
     private readonly FeatureSettings _features;
 
     public NotchViewModel()
-        : this(new FeatureSettings())
-    {
-    }
+        : this(new FeatureSettings()) { }
 
     public NotchViewModel(FeatureSettings? features)
     {
         _features = features ?? new FeatureSettings();
-        ActiveModules = new ObservableCollection<NotchModuleBase>();
         LoadModules();
     }
 
     private void LoadModules()
     {
-        var moduleBaseType = typeof(NotchModuleBase);
+        var baseType = typeof(NotchModuleBase);
 
-        var assemblies = AppDomain.CurrentDomain.GetAssemblies()
+        var types = AppDomain.CurrentDomain.GetAssemblies()
             .Where(a => !a.IsDynamic)
-            .ToArray();
-
-        var moduleTypes = assemblies
             .SelectMany(a =>
             {
-                try
-                {
-                    return a.GetTypes();
-                }
-                catch (ReflectionTypeLoadException ex)
-                {
-                    // ritorna i tipi caricati correttamente anche se alcuni falliscono
-                    return ex.Types.Where(t => t != null)!;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Impossibile leggere i tipi dall'assembly {a.FullName}: {ex.Message}");
-                    return Array.Empty<Type>();
-                }
+                try { return a.GetTypes(); }
+                catch (ReflectionTypeLoadException ex) { return ex.Types.Where(t => t != null)!; }
+                catch (Exception ex) { Debug.WriteLine($"Assembly skip: {ex.Message}"); return Array.Empty<Type>(); }
             })
-            .Where(t => t is not null && moduleBaseType.IsAssignableFrom(t) && !t.IsAbstract)
+            .Where(t => t is not null && baseType.IsAssignableFrom(t) && !t.IsAbstract)
             .Where(IsModuleEnabled)
-            .Distinct()
-            .ToList();
+            .Distinct();
 
-        foreach (var type in moduleTypes)
+        foreach (var type in types)
         {
             try
             {
-                // Richiede costruttore senza parametri
-                var ctor = type.GetConstructor(Type.EmptyTypes);
-                if (ctor == null)
+                var ctor = type!.GetConstructor(Type.EmptyTypes);
+                if (ctor is null) continue;
+
+                if (Activator.CreateInstance(type) is not NotchModuleBase module) continue;
+
+                var dispatcher = Application.Current?.Dispatcher;
+                void Add()
                 {
-                    Debug.WriteLine($"Modulo ignorato (manca ctor parameterless): {type.FullName}");
-                    continue;
+                    if (module.Zone == ModuleZone.Right)
+                        RightModules.Add(module);
+                    else
+                        LeftModules.Add(module);
                 }
 
-                if (Activator.CreateInstance(type) is NotchModuleBase module)
-                {
-                    // Assicura l'aggiunta sulla UI thread se disponibile
-                    var dispatcher = Application.Current?.Dispatcher;
-                    if (dispatcher != null && !dispatcher.CheckAccess())
-                    {
-                        dispatcher.Invoke(() => ActiveModules.Add(module));
-                    }
-                    else
-                    {
-                        ActiveModules.Add(module);
-                    }
-                }
+                if (dispatcher is not null && !dispatcher.CheckAccess())
+                    dispatcher.Invoke(Add);
+                else
+                    Add();
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Errore creando il modulo {type.FullName}: {ex.Message}");
+                Debug.WriteLine($"Modulo non caricato {type!.FullName ?? type.Name}: {ex.Message}");
             }
         }
     }
 
-    private bool IsModuleEnabled(Type type)
+    private bool IsModuleEnabled(Type? type) => type?.Name switch
     {
-        return type.Name switch
-        {
-            "MusicModule" => _features.EnableMusicModule,
-            "BatteryModule" => _features.EnableBatteryModule,
-            "CameraModule" => _features.EnableCameraMirror,
-            "NotesModule" => _features.EnableNotesIntegration,
-            _ => true
-        };
-    }
+        "BatteryModule"       => _features.EnableBatteryModule,
+        "CameraModule"        => _features.EnableCameraMirror,
+        "NotesModule"         => _features.EnableNotesIntegration,
+        _                     => true
+    };
 }

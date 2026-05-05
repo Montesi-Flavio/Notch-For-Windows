@@ -1,7 +1,7 @@
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Media.Animation;
 using Notch.Configuration;
 
@@ -9,13 +9,14 @@ namespace Notch.Services;
 
 public class NotchWindow : Window
 {
-    protected Border? NotchBorder;
-    protected FrameworkElement? ContentArea;
+    protected Border? _notchBorder;
+    protected FrameworkElement? _contentArea;
+    private TranslateTransform? _contentSlide;
 
-    private readonly double _baseWidth;
-    private readonly double _expandedWidth;
-    private readonly double _baseHeight;
-    private readonly double _expandedHeight;
+    private double _baseWidth;
+    private double _expandedWidth;
+    private double _baseHeight;
+    private double _expandedHeight;
 
     protected NotchWindow()
         : this(new WindowSettings())
@@ -31,66 +32,132 @@ public class NotchWindow : Window
         _baseHeight = settings.BaseHeight;
         _expandedHeight = settings.ExpandedHeight;
 
-        // Impostazioni essenziali per la trasparenza
         this.WindowStyle = WindowStyle.None;
         this.AllowsTransparency = true;
-        this.Background = System.Windows.Media.Brushes.Transparent;
+        this.Background = Brushes.Transparent;
         this.Topmost = true;
     }
 
     protected void InitializeNotch()
     {
-        NotchBorder = FindName("NotchBorder") as Border;
-        ContentArea = FindName("ContentArea") as FrameworkElement;
+        _notchBorder = FindName("NotchBorder") as Border;
+        _contentArea = FindName("ContentArea") as FrameworkElement;
 
-        Width = _expandedWidth + 30;
-        Height = _expandedHeight;
-
-        // Posizioniamo la finestra (che � larga 500px invisibili) al centro dello schermo
-        double screenWidth = SystemParameters.PrimaryScreenWidth;
-        this.Left = (screenWidth / 2) - (this.Width / 2);
-        this.Top = 0;
-
-        if (NotchBorder != null)
+        // Prepara il TranslateTransform per l'effetto slide-up del contenuto
+        if (_contentArea is not null)
         {
-            NotchBorder.Width = _baseWidth;
-            NotchBorder.Height = _baseHeight;
+            _contentSlide = new TranslateTransform(0, 8);
+            _contentArea.RenderTransform = _contentSlide;
         }
 
-        // Eventi Mouse sul BORDO, non sulla finestra (altrimenti cattura il mouse anche sul trasparente)
-        if (NotchBorder != null)
+        ApplyWindowSettings(_baseWidth, _expandedWidth, _baseHeight, _expandedHeight);
+
+        if (_notchBorder is not null)
         {
-            NotchBorder.MouseEnter += (s, e) => AnimateNotch(true);
-            NotchBorder.MouseLeave += (s, e) => AnimateNotch(false);
+            _notchBorder.MouseEnter += (_, _) => AnimateNotch(true);
+            _notchBorder.MouseLeave += (_, _) => AnimateNotch(false);
         }
     }
 
-    private void AnimateNotch(bool isExpanded)
+    private void AnimateNotch(bool expand)
     {
-        TimeSpan duration = TimeSpan.FromMilliseconds(300);
+        if (expand)
+            AnimateOpen();
+        else
+            AnimateClose();
+    }
 
-        // Easing "Quartic" rende il movimento molto naturale
-        var ease = isExpanded
-            ? (IEasingFunction)new QuarticEase { EasingMode = EasingMode.EaseOut }
-            : new QuarticEase { EasingMode = EasingMode.EaseIn };
+    private void AnimateOpen()
+    {
+        // 1. Border si espande con QuinticEase (rapido + morbido come Dynamic Island)
+        var borderEase = new QuinticEase { EasingMode = EasingMode.EaseOut };
+        var borderDuration = TimeSpan.FromMilliseconds(380);
 
-        // Definizione Valori Target
-        double targetWidth = isExpanded ? _expandedWidth : _baseWidth;
-        double targetHeight = isExpanded ? _expandedHeight : _baseHeight;
-        double targetOpacity = isExpanded ? 1.0 : 0.0;
+        _notchBorder?.BeginAnimation(FrameworkElement.WidthProperty,
+            new DoubleAnimation(_expandedWidth, borderDuration) { EasingFunction = borderEase });
+        _notchBorder?.BeginAnimation(FrameworkElement.HeightProperty,
+            new DoubleAnimation(_expandedHeight, borderDuration) { EasingFunction = borderEase });
 
-        // 1. Animiamo Larghezza e Altezza del BORDO CENTRALE
-        // Nota: Non tocchiamo la Window, solo il Border interno!
-        if (NotchBorder != null)
+        // 2. Contenuto appare 110ms dopo, con slide-up da +8px a 0
+        var contentEase = new CubicEase { EasingMode = EasingMode.EaseOut };
+        var contentDuration = TimeSpan.FromMilliseconds(260);
+        var contentDelay = TimeSpan.FromMilliseconds(110);
+
+        if (_contentArea is not null)
         {
-            var widthAnim = new DoubleAnimation(targetWidth, duration) { EasingFunction = ease };
-            var heightAnim = new DoubleAnimation(targetHeight, duration) { EasingFunction = ease };
-
-            NotchBorder.BeginAnimation(FrameworkElement.WidthProperty, widthAnim);
-            NotchBorder.BeginAnimation(FrameworkElement.HeightProperty, heightAnim);
+            _contentArea.BeginAnimation(UIElement.OpacityProperty,
+                new DoubleAnimation(1.0, contentDuration)
+                {
+                    EasingFunction = contentEase,
+                    BeginTime = contentDelay
+                });
         }
 
-        // 2. Animiamo l'Opacit� del contenuto
-        ContentArea?.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(targetOpacity, duration));
+        _contentSlide?.BeginAnimation(TranslateTransform.YProperty,
+            new DoubleAnimation(0, contentDuration)
+            {
+                EasingFunction = contentEase,
+                BeginTime = contentDelay
+            });
+    }
+
+    private void AnimateClose()
+    {
+        // 1. Contenuto sparisce subito (rapido, deciso)
+        var hideDuration = TimeSpan.FromMilliseconds(100);
+        var hideEase = new QuadraticEase { EasingMode = EasingMode.EaseIn };
+
+        if (_contentArea is not null)
+        {
+            _contentArea.BeginAnimation(UIElement.OpacityProperty,
+                new DoubleAnimation(0.0, hideDuration) { EasingFunction = hideEase });
+        }
+
+        _contentSlide?.BeginAnimation(TranslateTransform.YProperty,
+            new DoubleAnimation(8, hideDuration) { EasingFunction = hideEase });
+
+        // 2. Border si chiude 80ms dopo (aspetta che il contenuto scompaia)
+        var borderEase = new QuarticEase { EasingMode = EasingMode.EaseIn };
+        var borderDuration = TimeSpan.FromMilliseconds(220);
+        var borderDelay = TimeSpan.FromMilliseconds(80);
+
+        _notchBorder?.BeginAnimation(FrameworkElement.WidthProperty,
+            new DoubleAnimation(_baseWidth, borderDuration)
+            {
+                EasingFunction = borderEase,
+                BeginTime = borderDelay
+            });
+        _notchBorder?.BeginAnimation(FrameworkElement.HeightProperty,
+            new DoubleAnimation(_baseHeight, borderDuration)
+            {
+                EasingFunction = borderEase,
+                BeginTime = borderDelay
+            });
+    }
+
+    protected void ApplyWindowSettings(WindowSettings settings)
+    {
+        ApplyWindowSettings(settings.BaseWidth, settings.ExpandedWidth, settings.BaseHeight, settings.ExpandedHeight);
+    }
+
+    private void ApplyWindowSettings(double baseWidth, double expandedWidth, double baseHeight, double expandedHeight)
+    {
+        _baseWidth = baseWidth;
+        _expandedWidth = expandedWidth;
+        _baseHeight = baseHeight;
+        _expandedHeight = expandedHeight;
+
+        Width = _expandedWidth + 36;
+        Height = _expandedHeight;
+
+        double screenWidth = SystemParameters.PrimaryScreenWidth;
+        Left = (screenWidth / 2) - (Width / 2);
+        Top = 0;
+
+        if (_notchBorder is not null)
+        {
+            _notchBorder.Width = _baseWidth;
+            _notchBorder.Height = _baseHeight;
+        }
     }
 }

@@ -1,0 +1,44 @@
+<local:NotchModuleBase x:Class="Notch.Modules.SpotifyModule"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:local="clr-namespace:Notch.Core">
+
+    <StackPanel Orientation="Horizontal"
+                VerticalAlignment="Center"
+                Margin="12,6">
+
+        <!-- Album art circolare -->
+        <Grid Width="36" Height="36">
+            <Grid.Clip>
+                <EllipseGeometry Center="18,18" RadiusX="18" RadiusY="18"/>
+            </Grid.Clip>
+            <Rectangle Fill="{StaticResource NotchAccentBrush}"/>
+            <Image x:Name="ImgAlbumArt" Stretch="UniformToFill"/>
+        </Grid>
+
+        <!-- Separatore -->
+        <Rectangle Style="{StaticResource ModuleDividerStyle}"/>
+
+        <!-- Info testo -->
+        <StackPanel VerticalAlignment="Center" MaxWidth="190">
+            <StackPanel Orientation="Horizontal">
+                <!-- Dot Spotify verde -->
+                <Ellipse Width="6" Height="6"
+                         Fill="#1DB954"
+                         VerticalAlignment="Center"
+                         Margin="0,0,5,0"/>
+                <TextBlock x:Name="TxtTitle"
+                           Text="Spotify"
+                           Style="{StaticResource ModuleTextStyle}"
+                           FontWeight="SemiBold"
+                           TextTrimming="CharacterEllipsis"
+                           MaxWidth="165"/>
+            </StackPanel>
+            <TextBlock x:Name="TxtArtist"
+                       Text="Nessun brano in riproduzione"
+                       Style="{StaticResource ModuleSecondaryTextStyle}"
+                       TextTrimming="CharacterEllipsis"
+                       Margin="11,1,0,0"/>
+        </StackPanel>
+    </StackPanel>
+</local:NotchModuleBase>

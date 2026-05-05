@@ -8,10 +8,10 @@ Lista delle prossime implementazioni e migliorie per Notch For Windows.
   - [ ] Aprire cartelle e file direttamente dal notch
   - [ ] Azioni rapide su file selezionati
   - [ ] Integrazione con Esplora risorse di Windows
-- [ ] Settings dell’app
-  - [ ] Pannello impostazioni dedicato
-  - [ ] Configurare comportamento, dimensioni e aspetto del notch
-  - [ ] Salvare preferenze utente
+- [x] Settings dell’app
+  - [x] Pannello impostazioni dedicato
+  - [x] Configurare comportamento, dimensioni e aspetto del notch
+  - [x] Salvare preferenze utente
 
 ## Funzionalità future
 

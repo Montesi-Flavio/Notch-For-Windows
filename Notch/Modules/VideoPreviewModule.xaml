@@ -1,0 +1,49 @@
+<local:NotchModuleBase x:Class="Notch.Modules.VideoPreviewModule"
+                      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                      xmlns:local="clr-namespace:Notch.Core">
+
+    <StackPanel Orientation="Horizontal"
+                VerticalAlignment="Center"
+                Margin="12,6">
+
+        <!-- Thumbnail 16:9 con angoli arrotondati -->
+        <Border Width="60" Height="34"
+                CornerRadius="5"
+                Background="{StaticResource NotchAccentBrush}"
+                ClipToBounds="True">
+            <Grid>
+                <TextBlock Text="▶"
+                           Foreground="White"
+                           FontSize="13"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Opacity="0.3"/>
+                <Image x:Name="ImgThumbnail"
+                       Stretch="UniformToFill"/>
+            </Grid>
+        </Border>
+
+        <!-- Separatore -->
+        <Rectangle Style="{StaticResource ModuleDividerStyle}"/>
+
+        <!-- Info testo -->
+        <StackPanel VerticalAlignment="Center" MaxWidth="190">
+            <TextBlock x:Name="TxtTitle"
+                       Text="Nessun video"
+                       Style="{StaticResource ModuleTextStyle}"
+                       FontWeight="SemiBold"
+                       TextTrimming="CharacterEllipsis"/>
+            <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
+                <Ellipse x:Name="EllipseStatus"
+                         Width="5" Height="5"
+                         Fill="#FF3D3D3D"
+                         VerticalAlignment="Center"
+                         Margin="0,0,4,0"/>
+                <TextBlock x:Name="TxtSource"
+                           Style="{StaticResource ModuleSecondaryTextStyle}"
+                           TextTrimming="CharacterEllipsis"/>
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</local:NotchModuleBase>

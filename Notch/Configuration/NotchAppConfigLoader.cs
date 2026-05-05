@@ -7,12 +7,13 @@ public static class NotchAppConfigLoader
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
+        WriteIndented = true,
         PropertyNameCaseInsensitive = true
     };
 
     public static NotchAppSettings Load(string? path = null)
     {
-        path ??= Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+        path ??= ResolveLoadPath();
 
         if (!File.Exists(path))
         {
@@ -28,5 +29,27 @@ public static class NotchAppConfigLoader
         {
             return new NotchAppSettings();
         }
+    }
+
+    public static void Save(NotchAppSettings settings, string? path = null)
+    {
+        path ??= NotchAppConfigPaths.UserConfigPath;
+
+        Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+
+        var json = JsonSerializer.Serialize(settings, JsonOptions);
+        File.WriteAllText(path, json);
+    }
+
+    private static string ResolveLoadPath()
+    {
+        if (File.Exists(NotchAppConfigPaths.UserConfigPath))
+        {
+            return NotchAppConfigPaths.UserConfigPath;
+        }
+
+        return File.Exists(NotchAppConfigPaths.DefaultConfigPath)
+            ? NotchAppConfigPaths.DefaultConfigPath
+            : NotchAppConfigPaths.UserConfigPath;
     }
 }

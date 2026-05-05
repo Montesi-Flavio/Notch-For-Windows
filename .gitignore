@@ -365,3 +365,6 @@ FodyWeavers.xsd
 # AI Memory and related files
 CLAUDE.md
 .claude/
+
+# environment files
+.env

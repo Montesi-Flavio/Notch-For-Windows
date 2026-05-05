@@ -1,3 +1,5 @@
+using System.IO;
+
 namespace Notch.Configuration;
 
 public sealed class NotchAppSettings
@@ -7,12 +9,23 @@ public sealed class NotchAppSettings
     public FeatureSettings Features { get; set; } = new();
 }
 
+public static class NotchAppConfigPaths
+{
+    public static string UserConfigDirectory => Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "Notch For Windows");
+
+    public static string UserConfigPath => Path.Combine(UserConfigDirectory, "appsettings.json");
+
+    public static string DefaultConfigPath => Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+}
+
 public sealed class WindowSettings
 {
     public double BaseWidth { get; set; } = 370;
-    public double ExpandedWidth { get; set; } = 450;
+    public double ExpandedWidth { get; set; } = 480;
     public double BaseHeight { get; set; } = 40;
-    public double ExpandedHeight { get; set; } = 150;
+    public double ExpandedHeight { get; set; } = 106;
 }
 
 public sealed class SpotifySettings
