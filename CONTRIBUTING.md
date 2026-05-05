@@ -40,11 +40,3 @@ Sii gentile e rispettoso nei confronti degli altri contributori. Siamo qui per c
 
 Grazie ancora per il tuo supporto!  
 **— Flavio Montesi**
-
-## Comportamento 🤝
-
-Sii gentile e rispettoso nei confronti degli altri contributori. Siamo qui per costruire qualcosa di utile insieme!
-
----
-Grazie ancora per il tuo supporto!  
-**— Flavio Montesi**
