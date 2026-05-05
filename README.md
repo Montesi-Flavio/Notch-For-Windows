@@ -69,9 +69,3 @@ Distribuito sotto Licenza MIT. Vedi LICENSE per maggiori informazioni.
 
 Creato con ❤️ da Montesi-Flavio
 Apri una Pull Request.
-
-## 📄 Licenza
-
-Distribuito sotto Licenza MIT. Vedi LICENSE per maggiori informazioni.
-
-Creato con ❤️ da Montesi-Flavio
