@@ -41,11 +41,12 @@ Opzionale: Aggiungi il programma all'avvio automatico di Windows nelle impostazi
 Sviluppo e mantengo questo progetto nel mio tempo libero. Se trovi utile questo software e vuoi sostenere il mio lavoro, considera di offrirmi un caffè! Ogni piccola donazione aiuta a mantenere vivo il progetto e a implementare nuove feature.
 
 Metodi di Donazione:
-PayPal: Fai una donazione tramite PayPal
+PayPal: [Fai una donazione tramite PayPal](https://www.paypal.me/erflambe)
 
 GitHub Sponsors: Diventa uno sponsor
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z81Z05CY): Comprami un caffè su Ko-fi
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Z8Z81Z05CY)
+Comprami un caffè su Ko-fi
 
 Nota: Se effettui una donazione, scrivimi pure nei commenti o via mail per essere inserito nella lista dei "Top Supporters" qui sotto!
 
