@@ -3,7 +3,8 @@
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:local="clr-namespace:Notch.Core">
 
-    <StackPanel Orientation="Horizontal"
+    <StackPanel x:Name="RootPanel"
+                Orientation="Horizontal"
                 VerticalAlignment="Center"
                 Margin="12,6">
 
@@ -20,7 +21,7 @@
         <Rectangle Style="{StaticResource ModuleDividerStyle}"/>
 
         <!-- Info testo -->
-        <StackPanel VerticalAlignment="Center" MaxWidth="190">
+        <StackPanel x:Name="TextPanel" VerticalAlignment="Center" MaxWidth="190">
             <StackPanel Orientation="Horizontal">
                 <!-- Dot Spotify verde -->
                 <Ellipse Width="6" Height="6"
@@ -39,6 +40,13 @@
                        Style="{StaticResource ModuleSecondaryTextStyle}"
                        TextTrimming="CharacterEllipsis"
                        Margin="11,1,0,0"/>
+            <TextBlock x:Name="TxtStatus"
+                       Text=""
+                       Visibility="Collapsed"
+                       Style="{StaticResource ModuleSecondaryTextStyle}"
+                       Opacity="0.65"
+                       TextTrimming="CharacterEllipsis"
+                       Margin="11,2,0,0"/>
         </StackPanel>
     </StackPanel>
 </local:NotchModuleBase>

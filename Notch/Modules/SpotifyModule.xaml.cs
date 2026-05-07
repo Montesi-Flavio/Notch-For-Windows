@@ -1,3 +1,4 @@
+using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Notch.Core;
@@ -21,15 +22,32 @@ public partial class SpotifyModule : NotchModuleBase
         _pollTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
         _pollTimer.Tick += async (_, _) => await RefreshAsync();
 
+        NotchWindow.ExpandedChanged += OnExpandedChanged;
+        UpdateCompactState(NotchWindow.IsExpanded);
+
         _ = InitializeAsync();
     }
 
     private async Task InitializeAsync()
     {
-        if (!_spotify.IsConfigured) return;
+        if (!_spotify.IsConfigured)
+        {
+            SetStatus("Config mancante: SPOTIFY_CLIENT_ID/SECRET");
+            SetActive(true);
+            return;
+        }
+
+        SetStatus("Autorizzazione in corso...");
 
         var authorized = await _spotify.AuthorizeAsync();
-        if (!authorized) return;
+        if (!authorized)
+        {
+            SetStatus("Autorizzazione fallita");
+            SetActive(true);
+            return;
+        }
+
+        SetStatus(string.Empty);
 
         await RefreshAsync();
         _pollTimer.Start();
@@ -61,4 +79,32 @@ public partial class SpotifyModule : NotchModuleBase
 
     public override void OnModuleActivated()  => _ = RefreshAsync();
     public override void OnModuleDeactivated() { }
+
+    private void OnExpandedChanged(bool isExpanded)
+    {
+        UpdateCompactState(isExpanded);
+    }
+
+    private void UpdateCompactState(bool isExpanded)
+    {
+        if (TextPanel is null || RootPanel is null) return;
+
+        TextPanel.Visibility = isExpanded
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+
+        RootPanel.Margin = isExpanded
+            ? new Thickness(12, 6, 12, 6)
+            : new Thickness(6, 4, 6, 4);
+    }
+
+    private void SetStatus(string message)
+    {
+        if (TxtStatus is null) return;
+
+        TxtStatus.Text = message;
+        TxtStatus.Visibility = string.IsNullOrWhiteSpace(message)
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+    }
 }

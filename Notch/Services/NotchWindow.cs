@@ -9,6 +9,9 @@ namespace Notch.Services;
 
 public class NotchWindow : Window
 {
+    public static event Action<bool>? ExpandedChanged;
+    public static bool IsExpanded { get; private set; }
+
     protected Border? _notchBorder;
     protected FrameworkElement? _contentArea;
     private TranslateTransform? _contentSlide;
@@ -17,6 +20,7 @@ public class NotchWindow : Window
     private double _expandedWidth;
     private double _baseHeight;
     private double _expandedHeight;
+    private bool _isPinnedOpen;
 
     protected NotchWindow()
         : this(new WindowSettings())
@@ -54,13 +58,33 @@ public class NotchWindow : Window
 
         if (_notchBorder is not null)
         {
-            _notchBorder.MouseEnter += (_, _) => AnimateNotch(true);
-            _notchBorder.MouseLeave += (_, _) => AnimateNotch(false);
+            _notchBorder.MouseEnter += (_, _) =>
+            {
+                if (!_isPinnedOpen) AnimateNotch(true);
+            };
+            _notchBorder.MouseLeave += (_, _) =>
+            {
+                if (!_isPinnedOpen) AnimateNotch(false);
+            };
+            _notchBorder.MouseLeftButtonUp += (_, _) => TogglePinnedState();
         }
+
+        IsExpanded = false;
+        ExpandedChanged?.Invoke(IsExpanded);
+    }
+
+    private void TogglePinnedState()
+    {
+        _isPinnedOpen = !_isPinnedOpen;
+        AnimateNotch(_isPinnedOpen);
     }
 
     private void AnimateNotch(bool expand)
     {
+        if (IsExpanded == expand) return;
+        IsExpanded = expand;
+        ExpandedChanged?.Invoke(IsExpanded);
+
         if (expand)
             AnimateOpen();
         else
@@ -103,20 +127,17 @@ public class NotchWindow : Window
 
     private void AnimateClose()
     {
-        // 1. Contenuto sparisce subito (rapido, deciso)
-        var hideDuration = TimeSpan.FromMilliseconds(100);
-        var hideEase = new QuadraticEase { EasingMode = EasingMode.EaseIn };
-
         if (_contentArea is not null)
         {
-            _contentArea.BeginAnimation(UIElement.OpacityProperty,
-                new DoubleAnimation(0.0, hideDuration) { EasingFunction = hideEase });
+            _contentArea.Opacity = 1.0;
         }
 
-        _contentSlide?.BeginAnimation(TranslateTransform.YProperty,
-            new DoubleAnimation(8, hideDuration) { EasingFunction = hideEase });
+        if (_contentSlide is not null)
+        {
+            _contentSlide.Y = 0;
+        }
 
-        // 2. Border si chiude 80ms dopo (aspetta che il contenuto scompaia)
+        // Border si chiude 80ms dopo
         var borderEase = new QuarticEase { EasingMode = EasingMode.EaseIn };
         var borderDuration = TimeSpan.FromMilliseconds(220);
         var borderDelay = TimeSpan.FromMilliseconds(80);

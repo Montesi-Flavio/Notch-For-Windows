@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Windows;
+using System.Windows.Input;
 using Notch.Configuration;
 using Notch.Services;
 using Notch.ViewModels;
@@ -23,6 +24,9 @@ public partial class MainWindow : NotchWindow
 
         PreviewKeyDown += OnPreviewKeyDown;
         InitializeNotch();
+
+        NotchWindow.ExpandedChanged += OnExpandedChanged;
+        UpdateSettingsButtonVisibility(NotchWindow.IsExpanded);
     }
 
     private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -46,5 +50,21 @@ public partial class MainWindow : NotchWindow
             ApplyWindowSettings(_settings.Window);
             DataContext = new NotchViewModel(_settings.Features);
         }
+    }
+
+    private void SettingsButton_Click(object sender, RoutedEventArgs e)
+    {
+        OpenSettingsWindow();
+    }
+
+    private void OnExpandedChanged(bool isExpanded)
+    {
+        UpdateSettingsButtonVisibility(isExpanded);
+    }
+
+    private void UpdateSettingsButtonVisibility(bool isExpanded)
+    {
+        if (SettingsButton is null) return;
+        SettingsButton.Visibility = isExpanded ? Visibility.Visible : Visibility.Collapsed;
     }
 }

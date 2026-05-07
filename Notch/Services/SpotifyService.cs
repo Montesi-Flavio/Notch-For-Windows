@@ -13,7 +13,7 @@ public record SpotifyTrackInfo(string Title, string Artist, string AlbumArtUrl, 
 public class SpotifyService
 {
     private const string TokenFile = "spotify_refresh.token";
-    private const int CallbackPort = 5000;
+    private const int CallbackPort = 3000;
 
     private readonly string _clientId;
     private readonly string _clientSecret;
@@ -47,7 +47,7 @@ public class SpotifyService
     private async Task<bool> FullAuthFlowAsync()
     {
         var state = Guid.NewGuid().ToString("N")[..8];
-        var redirectUri = $"http://localhost:{CallbackPort}/callback";
+        var redirectUri = $"http://127.0.0.1:{CallbackPort}/callback";
         var scope = "user-read-currently-playing user-read-playback-state";
         var authUrl = "https://accounts.spotify.com/authorize"
             + $"?response_type=code&client_id={_clientId}"
@@ -66,7 +66,7 @@ public class SpotifyService
     private async Task<string?> ListenForCallbackAsync(string expectedState)
     {
         using var listener = new HttpListener();
-        listener.Prefixes.Add($"http://localhost:{CallbackPort}/");
+        listener.Prefixes.Add($"http://127.0.0.1:{CallbackPort}/");
         listener.Start();
 
         using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(2));

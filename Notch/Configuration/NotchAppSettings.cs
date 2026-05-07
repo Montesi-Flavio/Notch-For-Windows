@@ -23,7 +23,7 @@ public static class NotchAppConfigPaths
 public sealed class WindowSettings
 {
     public double BaseWidth { get; set; } = 370;
-    public double ExpandedWidth { get; set; } = 480;
+    public double ExpandedWidth { get; set; } = 560;
     public double BaseHeight { get; set; } = 40;
     public double ExpandedHeight { get; set; } = 106;
 }

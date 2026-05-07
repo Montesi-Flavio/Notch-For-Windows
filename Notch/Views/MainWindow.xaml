@@ -40,7 +40,7 @@
                 </Border.Effect>
 
                 <!-- ContentArea: padre comune per animare opacity + slide -->
-                <Grid x:Name="ContentArea" Opacity="0" Margin="14,8">
+                <Grid x:Name="ContentArea" Opacity="1" Margin="14,8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>     <!-- media/sinistra -->
                         <ColumnDefinition Width="Auto"/>  <!-- sistema/destra -->
@@ -58,17 +58,41 @@
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
 
-                    <!-- Moduli destra (Battery…) -->
-                    <ItemsControl Grid.Column="1"
-                                  ItemsSource="{Binding RightModules}"
-                                  VerticalAlignment="Center"
-                                  HorizontalAlignment="Right">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                    <!-- Moduli destra + impostazioni -->
+                    <Grid Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <ItemsControl Grid.Column="0"
+                                      ItemsSource="{Binding RightModules}"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Right">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                        <Button x:Name="SettingsButton"
+                                Grid.Column="1"
+                                Width="24"
+                                Height="24"
+                                Margin="8,0,0,0"
+                                Padding="0"
+                                Background="Transparent"
+                                BorderBrush="{x:Null}"
+                                Foreground="White"
+                                Click="SettingsButton_Click">
+                            <TextBlock Text="&#xE713;"
+                                       FontFamily="Segoe MDL2 Assets"
+                                       FontSize="14"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Center"/>
+                        </Button>
+                    </Grid>
 
                 </Grid>
             </Border>

@@ -4,6 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+  
     {
       "name": "Launch Notch",
       "type": "dotnet",
@@ -11,7 +12,8 @@
       "projectPath": "${workspaceFolder}/Notch/Notch.csproj",
       "cwd": "${workspaceFolder}/Notch",
       "stopAtEntry": false,
-      "console": "internalConsole"
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen"
     }
   ]
 }
